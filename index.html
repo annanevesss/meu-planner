@@ -272,6 +272,17 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .card,.metric,.mini-card{animation:fadeUp .4s ease both}
 
+/* ── COLAGEM DE FUNDO ── */
+.bg-collage{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+@media(min-width:1280px){.bg-collage{display:block}}
+.bg-sticker{position:absolute;width:128px;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.4);opacity:.8;pointer-events:auto;cursor:pointer;transition:transform .2s,opacity .2s;border:4px solid var(--surf)}
+.bg-sticker:hover{opacity:1;transform:scale(1.08) rotate(0deg) !important;z-index:1}
+.bg-s1{top:100px;left:22px;transform:rotate(-9deg)}
+.bg-s2{bottom:90px;left:34px;transform:rotate(6deg)}
+.bg-s3{top:130px;right:24px;transform:rotate(8deg)}
+.bg-s4{bottom:70px;right:30px;transform:rotate(-7deg)}
+@media(min-width:1280px) and (max-width:1500px){.bg-sticker{width:96px}}
+
 /* ══════════ PLANNER ══════════ */
 :root{
   --pink:#FF6FA5; --pink-l:rgba(255,111,165,.13); --pink-b:rgba(255,111,165,.28);
@@ -403,8 +414,6 @@ nav{flex-wrap:wrap;row-gap:10px}
 /* ── FRASE DE APOIO ── */
 .support-strip{display:flex;align-items:center;justify-content:center;gap:12px;padding:.5rem 1rem;font-size:12.5px;font-style:italic;color:var(--txt2);border-bottom:0.5px solid var(--bdr);background:var(--surf)}
 .support-quote{text-align:center}
-.support-thumb{width:34px;height:34px;border-radius:9px;object-fit:cover;cursor:pointer;border:1px solid var(--bdr2);transition:transform .2s;flex-shrink:0}
-.support-thumb:hover{transform:scale(1.15)}
 .lightbox-bg{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .lightbox-bg.open{opacity:1;pointer-events:all}
 .lightbox-bg img{max-width:90vw;max-height:88vh;border-radius:var(--r-md);box-shadow:var(--shad)}
@@ -413,6 +422,12 @@ nav{flex-wrap:wrap;row-gap:10px}
 </head>
 <body>
 <div class="ambient"></div>
+<div class="bg-collage" id="bg-collage" aria-hidden="true">
+  <img class="bg-sticker bg-s1" onclick="openLightboxSrc(this.src)" alt="">
+  <img class="bg-sticker bg-s2" onclick="openLightboxSrc(this.src)" alt="">
+  <img class="bg-sticker bg-s3" onclick="openLightboxSrc(this.src)" alt="">
+  <img class="bg-sticker bg-s4" onclick="openLightboxSrc(this.src)" alt="">
+</div>
 
 <!-- LOGIN -->
 <div id="login-screen">
@@ -443,7 +458,6 @@ nav{flex-wrap:wrap;row-gap:10px}
 
   <div class="support-strip" id="support-strip">
     <span class="support-quote" id="support-quote"></span>
-    <img class="support-thumb" id="support-thumb" onclick="openLightbox()" alt="Imagem de inspiração">
   </div>
 
   <div id="section-processos" class="section on">
@@ -1210,8 +1224,8 @@ const SUPPORT_IMAGES=[
   'velaris.jpg',
   'você é capaz.png'
 ];
-function openLightbox(){
-  document.getElementById('lightbox-img').src=document.getElementById('support-thumb').src;
+function openLightboxSrc(src){
+  document.getElementById('lightbox-img').src=src;
   document.getElementById('lightbox-bg').classList.add('open');
 }
 function closeLightbox(){document.getElementById('lightbox-bg').classList.remove('open')}
@@ -1223,9 +1237,12 @@ function closeLightbox(){document.getElementById('lightbox-bg').classList.remove
   const quote=SUPPORT_QUOTES[dayOfYear%SUPPORT_QUOTES.length];
   const quoteEl=document.getElementById('support-quote');
   if(quoteEl)quoteEl.textContent='💛 '+quote;
-  const img=SUPPORT_IMAGES[dayOfYear%SUPPORT_IMAGES.length];
-  const thumb=document.getElementById('support-thumb');
-  if(thumb)thumb.src='png/'+encodeURIComponent(img);
+})();
+
+(function renderBgCollage(){
+  document.querySelectorAll('.bg-sticker').forEach((el,i)=>{
+    if(SUPPORT_IMAGES[i])el.src='png/'+encodeURIComponent(SUPPORT_IMAGES[i]);
+  });
 })();
 
 /* ══════════ PLANNER ══════════ */
