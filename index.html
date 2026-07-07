@@ -105,7 +105,8 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 .page-sub{font-size:15px;color:var(--txt2);font-weight:400;line-height:1.75}
 
 /* ── METRICS ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2.75rem}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:2.75rem}
+@media(max-width:700px){.metrics{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:520px){.metrics{grid-template-columns:repeat(2,1fr)}}
 
 .metric{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r-md);padding:1.4rem 1rem 1.2rem;text-align:center;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
@@ -113,10 +114,12 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 .metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2.5px;border-radius:0 0 var(--r-md) var(--r-md)}
 .metric.mg::after{background:var(--green)} .metric.ma::after{background:var(--amber)}
 .metric.mr::after{background:var(--red)}   .metric.mp::after{background:var(--purple)}
+.metric.mt::after{background:var(--teal)}
 
 .metric-val{font-family:var(--font-display);font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:8px;letter-spacing:-.05em}
 .metric.mg .metric-val{color:var(--green)} .metric.ma .metric-val{color:var(--amber)}
 .metric.mr .metric-val{color:var(--red)}   .metric.mp .metric-val{color:var(--purple)}
+.metric.mt .metric-val{color:var(--teal)}
 
 .metric-label{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;line-height:1.4}
 
@@ -129,7 +132,8 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 [data-theme="light"] .slabel{color:var(--txt2);font-weight:700}
 
 /* ── CARD ── */
-.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r-lg);padding:1.6rem 1.9rem;margin-bottom:12px;transition:border-color .2s,transform .2s,box-shadow .2s}
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r-lg);padding:1.6rem 1.9rem;margin-bottom:12px;transition:border-color .2s,transform .2s,box-shadow .2s;cursor:pointer}
+.no-steps-hint{font-size:12px;color:var(--txt3);font-style:italic}
 .card:hover{transform:translateY(-2px);border-color:var(--bdr2);box-shadow:var(--shad)}
 .card-faded{opacity:.5}
 .card-faded:hover{opacity:.7;transform:none;box-shadow:none}
@@ -165,6 +169,7 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 .fa{background:linear-gradient(90deg,#d48a00,var(--amber))}
 .fr{background:linear-gradient(90deg,#c0304c,var(--red))}
 .fp{background:linear-gradient(90deg,#7b50cc,var(--purple))}
+.ft{background:linear-gradient(90deg,#0f9e88,var(--teal))}
 
 .prog-pct{font-family:var(--font-display);font-size:13px;font-weight:800;min-width:36px;text-align:right;letter-spacing:-.02em}
 [data-theme="light"] .prog-pct{font-weight:900}
@@ -189,8 +194,9 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-bg.open{opacity:1;pointer-events:all}
 
-.modal{background:var(--surf);border:0.5px solid var(--bdr2);border-radius:var(--r-xl);padding:2.25rem 2.5rem;width:100%;max-width:520px;box-shadow:var(--shad);transform:translateY(20px) scale(.97);transition:transform .25s;position:relative}
+.modal{background:var(--surf);border:0.5px solid var(--bdr2);border-radius:var(--r-xl);padding:2.25rem 2.5rem;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:var(--shad);transform:translateY(20px) scale(.97);transition:transform .25s;position:relative}
 .modal-bg.open .modal{transform:none}
+.modal-wide{max-width:660px}
 
 .modal-title{font-family:var(--font-display);font-size:1.6rem;font-weight:900;letter-spacing:-.04em;color:var(--txt);margin-bottom:.4rem}
 [data-theme="light"] .modal-title{font-weight:900}
@@ -357,6 +363,46 @@ nav{flex-wrap:wrap;row-gap:10px}
   .mcal-cell{min-height:56px;padding:6px}
   .mcal-num{font-size:.8rem}
 }
+
+/* ══════════ PROCESS DETAIL MODAL ══════════ */
+.detail-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:1.1rem}
+.detail-emoji{font-size:2.2rem;line-height:1;flex-shrink:0}
+.detail-row{display:flex;gap:10px;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.detail-deadline-input{flex:1;min-width:140px;background:var(--inp);border:0.5px solid var(--bdr2);border-radius:var(--r-sm);padding:.55rem .8rem;font-size:13px;font-family:var(--font-body);color:var(--txt);outline:none}
+.detail-deadline-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-l)}
+.detail-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:.75rem}
+.detail-step-row{display:flex;align-items:center;gap:9px;background:var(--surf2);border-radius:var(--r-sm);padding:8px 10px}
+.detail-step-row input[type="checkbox"]{width:15px;height:15px;cursor:pointer;flex-shrink:0;accent-color:var(--green)}
+.detail-step-label{flex:1;font-size:13.5px;color:var(--txt);outline:none;word-break:break-word}
+.detail-step-row.done .detail-step-label{text-decoration:line-through;opacity:.6}
+.detail-step-del{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:.8rem;opacity:.5;flex-shrink:0}
+.detail-step-del:hover{opacity:1;color:var(--red)}
+.detail-add-row{display:flex;gap:8px;margin-bottom:1rem}
+.detail-add-row input{flex:1;background:var(--inp);border:0.5px solid var(--bdr2);border-radius:var(--r-sm);padding:.6rem .9rem;font-size:13px;color:var(--txt);outline:none}
+.detail-add-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-l)}
+.detail-add-row button{padding:.6rem 1rem;border-radius:var(--r-sm);border:none;background:var(--green);color:#071810;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.detail-paste{margin-bottom:1.5rem;font-size:12.5px;color:var(--txt2)}
+.detail-paste summary{cursor:pointer;font-weight:600;padding:4px 0}
+.detail-paste textarea{width:100%;margin-top:8px;background:var(--inp);border:0.5px solid var(--bdr2);border-radius:var(--r-sm);padding:.6rem .8rem;font-size:13px;font-family:var(--font-body);color:var(--txt);resize:vertical;outline:none}
+.detail-paste button{margin-top:8px;padding:.5rem .9rem;border-radius:var(--r-sm);border:0.5px solid var(--purple-b);background:var(--purple-l);color:var(--purple);font-weight:600;font-size:12.5px;cursor:pointer}
+.detail-notes{width:100%;background:var(--inp);border:0.5px solid var(--bdr2);border-radius:var(--r-sm);padding:.75rem 1rem;font-size:13.5px;font-family:var(--font-body);color:var(--txt);resize:vertical;outline:none;margin-bottom:1.5rem}
+.detail-notes:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-l)}
+.checklist-block{margin-bottom:1.1rem}
+.checklist-block-title{font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;display:flex;justify-content:space-between}
+.checklist-item-row{display:flex;align-items:center;gap:9px;padding:5px 2px}
+.checklist-item-row input[type="checkbox"]{width:14px;height:14px;cursor:pointer;flex-shrink:0;accent-color:var(--purple)}
+.checklist-item-row.done span{text-decoration:line-through;opacity:.55}
+.checklist-item-row span{font-size:13px;color:var(--txt)}
+
+/* ── FRASE DE APOIO ── */
+.support-strip{display:flex;align-items:center;justify-content:center;gap:12px;padding:.5rem 1rem;font-size:12.5px;font-style:italic;color:var(--txt2);border-bottom:0.5px solid var(--bdr);background:var(--surf)}
+.support-quote{text-align:center}
+.support-thumb{width:34px;height:34px;border-radius:9px;object-fit:cover;cursor:pointer;border:1px solid var(--bdr2);transition:transform .2s;flex-shrink:0}
+.support-thumb:hover{transform:scale(1.15)}
+.lightbox-bg{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.lightbox-bg.open{opacity:1;pointer-events:all}
+.lightbox-bg img{max-width:90vw;max-height:88vh;border-radius:var(--r-md);box-shadow:var(--shad)}
+.lightbox-close{position:fixed;top:1.5rem;right:1.5rem;width:38px;height:38px;border-radius:var(--r-sm);border:0.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:1.1rem}
 </style>
 </head>
 <body>
@@ -389,6 +435,11 @@ nav{flex-wrap:wrap;row-gap:10px}
     </div>
   </nav>
 
+  <div class="support-strip" id="support-strip">
+    <span class="support-quote" id="support-quote"></span>
+    <img class="support-thumb" id="support-thumb" onclick="openLightbox()" alt="Imagem de inspiração">
+  </div>
+
   <div id="section-processos" class="section on">
   <div class="wrap">
     <div class="ph">
@@ -398,90 +449,22 @@ nav{flex-wrap:wrap;row-gap:10px}
     </div>
 
     <!-- MÉTRICAS -->
-    <div class="metrics">
-      <div class="metric mg"><div class="metric-val" id="cnt-a">2</div><div class="metric-label">Em andamento</div></div>
-      <div class="metric ma"><div class="metric-val" id="cnt-v">1</div><div class="metric-label">Avancei de fase</div></div>
-      <div class="metric mr"><div class="metric-val" id="cnt-r">2</div><div class="metric-label">Rejeitada</div></div>
-      <div class="metric mp"><div class="metric-val" id="cnt-s">5</div><div class="metric-label">Estudando</div></div>
-    </div>
+    <div class="metrics" id="process-metrics"></div>
 
     <!-- CARDS CONTAINER -->
     <div id="active-section">
       <div class="slabel">Em andamento</div>
-      <div id="active-cards">
-
-        <!-- WFS -->
-        <div class="card" id="card-wfs">
-          <div class="card-top">
-            <div class="card-l"><span class="co-emoji">✈️</span><div><div class="co-name">WFS</div><div class="co-meta">Serviços aeroportuários · logística global</div></div></div>
-            <div class="card-r"><span class="badge ba" onclick="cycleStatus(this)">Em andamento</span></div>
-          </div>
-          <div class="prog-row"><div class="prog-track"><div class="prog-fill fg" id="prog-wfs" style="width:20%"></div></div><span class="prog-pct" id="pct-wfs" style="color:var(--green)">20%</span></div>
-          <div class="steps">
-            <span class="step done" data-co="wfs" data-i="0">✓ Inscrição</span>
-            <span class="step" data-co="wfs" data-i="1">Testes online</span>
-            <span class="step" data-co="wfs" data-i="2">Dinâmica em grupo</span>
-            <span class="step" data-co="wfs" data-i="3">Business case</span>
-            <span class="step" data-co="wfs" data-i="4">Painel com diretores</span>
-          </div>
-        </div>
-
-        <!-- DIRECIONAL -->
-        <div class="card" id="card-direcional">
-          <div class="card-top">
-            <div class="card-l"><span class="co-emoji">🏗️</span><div><div class="co-name">Direcional</div><div class="co-meta">Construtora · Protagonize 5.0 · 16 meses</div></div></div>
-            <div class="card-r"><span class="deadline">até 31/05</span><span class="badge ba" onclick="cycleStatus(this)">Em andamento</span></div>
-          </div>
-          <div class="prog-row"><div class="prog-track"><div class="prog-fill fg" id="prog-direcional" style="width:20%"></div></div><span class="prog-pct" id="pct-direcional" style="color:var(--green)">20%</span></div>
-          <div class="steps">
-            <span class="step done" data-co="direcional" data-i="0">✓ Inscrição</span>
-            <span class="step" data-co="direcional" data-i="1">Testes online</span>
-            <span class="step" data-co="direcional" data-i="2">Dinâmica online</span>
-            <span class="step" data-co="direcional" data-i="3">Entrevista RH</span>
-            <span class="step" data-co="direcional" data-i="4">Painel final</span>
-          </div>
-        </div>
-
-        <!-- CAYENA -->
-        <div class="card" id="card-cayena">
-          <div class="card-top">
-            <div class="card-l"><span class="co-emoji">🌶️</span><div><div class="co-name">Cayena</div><div class="co-meta">Foodtech · marketplace B2B · 12 meses · R$ 9.000</div></div></div>
-            <div class="card-r"><span class="deadline">até 10/06</span><span class="badge bb" onclick="cycleStatus(this)">Avancei! 🎉</span></div>
-          </div>
-          <div class="prog-row"><div class="prog-track"><div class="prog-fill fa" id="prog-cayena" style="width:40%"></div></div><span class="prog-pct" id="pct-cayena" style="color:var(--amber)">40%</span></div>
-          <div class="steps">
-            <span class="step done" data-co="cayena" data-i="0">✓ Inscrição</span>
-            <span class="step cur"  data-co="cayena" data-i="1">Questionário de trajetória</span>
-            <span class="step" data-co="cayena" data-i="2">Entrevista de cultura</span>
-            <span class="step" data-co="cayena" data-i="3">Cayena Saturday</span>
-            <span class="step" data-co="cayena" data-i="4">Entrevista com founders</span>
-          </div>
-        </div>
-
-      </div>
+      <div id="active-cards"></div>
       <button class="btn-add" onclick="openModal()"><span class="btn-add-icon">＋</span> Adicionar processo</button>
     </div>
 
     <!-- ENCERRADAS -->
-    <div class="slabel">Encerradas</div>
-    <div class="card card-faded">
-      <div class="card-top"><div class="card-l"><span class="co-emoji">💊</span><div><div class="co-name">Silimed</div><div class="co-meta">Indústria médica</div></div></div><div class="card-r"><span class="badge bc" onclick="cycleStatus(this)">Rejeitada</span></div></div>
-      <div class="prog-row"><div class="prog-track"><div class="prog-fill fr" style="width:100%"></div></div><span class="prog-pct" style="color:var(--red)">—</span></div>
-    </div>
-    <div class="card card-faded">
-      <div class="card-top"><div class="card-l"><span class="co-emoji">📊</span><div><div class="co-name">RSM International</div><div class="co-meta">Auditoria e consultoria</div></div></div><div class="card-r"><span class="badge bc" onclick="cycleStatus(this)">Rejeitada</span></div></div>
-      <div class="prog-row"><div class="prog-track"><div class="prog-fill fr" style="width:100%"></div></div><span class="prog-pct" style="color:var(--red)">—</span></div>
-    </div>
+    <div class="slabel" id="closed-label" style="display:none">Encerradas</div>
+    <div id="closed-cards"></div>
 
     <!-- ESTUDANDO -->
-    <div class="slabel">Estudando</div>
-    <div class="mini-grid" id="studying-grid">
-      <div class="mini-card"><div class="mini-emoji">🦋</div><div class="mini-name">L'Oréal Paris</div><div class="mini-sector">Bens de consumo</div><div class="mini-bar"><div class="mini-bar-fill"></div></div></div>
-      <div class="mini-card"><div class="mini-emoji">🍺</div><div class="mini-name">Ambev</div><div class="mini-sector">Bebidas</div><div class="mini-bar"><div class="mini-bar-fill"></div></div></div>
-      <div class="mini-card"><div class="mini-emoji">🍫</div><div class="mini-name">Nestlé</div><div class="mini-sector">Alimentos</div><div class="mini-bar"><div class="mini-bar-fill"></div></div></div>
-      <div class="mini-card"><div class="mini-emoji">🏦</div><div class="mini-name">Prudential</div><div class="mini-sector">Seguros e finanças</div><div class="mini-bar"><div class="mini-bar-fill"></div></div></div>
-      <div class="mini-card"><div class="mini-emoji">🐂</div><div class="mini-name">Red Bull</div><div class="mini-sector">Bebidas / marketing</div><div class="mini-bar"><div class="mini-bar-fill"></div></div></div>
-    </div>
+    <div class="slabel" id="studying-label" style="display:none">Estudando</div>
+    <div id="studying-cards"></div>
   </div>
   </div>
 
@@ -699,6 +682,48 @@ nav{flex-wrap:wrap;row-gap:10px}
   </div>
 </div>
 
+<!-- PROCESS DETAIL MODAL -->
+<div class="modal-bg" id="detail-modal-bg" onclick="bgCloseDetail(event)">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    <div class="detail-head">
+      <span class="detail-emoji" id="detail-emoji"></span>
+      <div>
+        <h2 class="modal-title" id="detail-name" style="font-size:1.5rem"></h2>
+        <p class="modal-sub" id="detail-meta" style="margin-bottom:0"></p>
+      </div>
+    </div>
+    <div class="detail-row">
+      <span class="badge" id="detail-badge" onclick="cycleStatus(event,detailProcessId)"></span>
+      <input type="text" id="detail-deadline" class="detail-deadline-input" placeholder="Prazo (opcional, ex: até 30/06)" onblur="saveDetailDeadline()">
+    </div>
+
+    <div class="slabel" style="margin-top:0">Etapas do processo</div>
+    <div class="detail-steps" id="detail-steps"></div>
+    <div class="detail-add-row">
+      <input type="text" id="detail-new-step" placeholder="Nova etapa..." onkeydown="if(event.key==='Enter'){event.preventDefault();addDetailStep();}">
+      <button onclick="addDetailStep()">+ Adicionar</button>
+    </div>
+    <details class="detail-paste">
+      <summary>📋 Colar lista de etapas</summary>
+      <textarea id="detail-paste-text" rows="4" placeholder="Cole aqui, uma etapa por linha..."></textarea>
+      <button onclick="addPastedSteps()">Adicionar etapas coladas</button>
+    </details>
+
+    <div class="slabel">Observações</div>
+    <textarea id="detail-notes" class="detail-notes" rows="4" placeholder="Escreva suas observações sobre este processo..." onblur="saveDetailNotes()"></textarea>
+
+    <div class="slabel">Checklist de estudo</div>
+    <div id="detail-checklist"></div>
+    <button class="btn-add" id="detail-apply-template" onclick="applyStudyTemplate()"><span class="btn-add-icon">＋</span> Aplicar modelo de estudo</button>
+  </div>
+</div>
+
+<div class="lightbox-bg" id="lightbox-bg" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="Imagem de inspiração">
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -731,62 +756,6 @@ function toggleTheme(){
   const dark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',dark?'light':'dark');
   document.getElementById('theme-btn').textContent=dark?'☀️':'🌙';
-}
-
-/* ── STEPS STATE ── */
-const stepState={
-  wfs:       {done:[0],total:5,cur:1,fill:'fg',color:'var(--green)'},
-  direcional:{done:[0],total:5,cur:1,fill:'fg',color:'var(--green)'},
-  cayena:    {done:[0],total:5,cur:1,fill:'fa',color:'var(--amber)'},
-};
-
-document.querySelectorAll('.step[data-co]').forEach(el=>{
-  el.dataset.label=el.textContent.replace(/^✓\s*/,'');
-});
-
-function updateCard(co){
-  const s=stepState[co];
-  const pct=Math.round((s.done.length/s.total)*100);
-  document.getElementById('prog-'+co).style.width=pct+'%';
-  document.getElementById('pct-'+co).textContent=pct+'%';
-  document.querySelectorAll(`.step[data-co="${co}"]`).forEach(el=>{
-    const i=parseInt(el.dataset.i);
-    el.className='step';
-    if(s.done.includes(i)){el.classList.add('done');el.textContent='✓ '+el.dataset.label;}
-    else if(s.cur===i){el.classList.add('cur');el.textContent=el.dataset.label;}
-    else{el.textContent=el.dataset.label;}
-  });
-}
-
-document.addEventListener('click',e=>{
-  const el=e.target.closest('.step[data-co]');
-  if(!el)return;
-  const co=el.dataset.co,idx=parseInt(el.dataset.i);
-  const s=stepState[co];
-  if(!s)return;
-  if(s.done.includes(idx)){
-    s.done=s.done.filter(i=>i<idx);s.cur=idx;showToast('Etapa desmarcada');
-  } else {
-    for(let i=0;i<=idx;i++)if(!s.done.includes(i))s.done.push(i);
-    s.cur=idx+1<s.total?idx+1:null;
-    showToast(idx===s.total-1?'🎉 Processo concluído!':'✓ Etapa concluída!');
-  }
-  updateCard(co);
-});
-
-/* ── STATUS CYCLE ── */
-const STATUS_CYCLE=[
-  {cls:'ba',text:'Em andamento'},
-  {cls:'bb',text:'Avancei! 🎉'},
-  {cls:'be',text:'Concluído ✅'},
-  {cls:'bc',text:'Rejeitada'}
-];
-function cycleStatus(el){
-  const cur=STATUS_CYCLE.findIndex(s=>el.classList.contains(s.cls));
-  const next=STATUS_CYCLE[(cur+1)%STATUS_CYCLE.length];
-  STATUS_CYCLE.forEach(s=>el.classList.remove(s.cls));
-  el.classList.add(next.cls);
-  el.textContent=next.text;
 }
 
 /* ── MODAL ── */
@@ -908,70 +877,31 @@ Máximo 6 etapas. Não inclua markdown, não use blocos de código.`;
 }
 
 /* ── SAVE PROCESS ── */
-let cardCounter=100;
-
 function saveProcess(group){
-  const name=(document.getElementById(group+'-company')||document.getElementById('ai-company')).value.trim()||
-             (group==='man'?document.getElementById('man-company').value.trim():'');
   const companyName=group==='ai'?document.getElementById('ai-company').value.trim():document.getElementById('man-company').value.trim();
   if(!companyName){showToast('Informe o nome da empresa!');return;}
 
-  const steps=getSteps(group);
-  if(!steps.length){showToast('Adicione pelo menos uma etapa!');return;}
+  const stepLabels=getSteps(group);
+  if(!stepLabels.length){showToast('Adicione pelo menos uma etapa!');return;}
 
   const meta=group==='man'?document.getElementById('man-meta').value.trim():'';
   const statusVal=document.getElementById(group+'-status-sel').value;
-  const deadline=document.getElementById(group+'-deadline').value.trim();
+  const deadline=document.getElementById(group+'-deadline').value.trim()||null;
   const emoji=getEmoji(group);
   const currentStep=group==='ai'?document.getElementById('ai-current-step').value.trim():'';
 
-  const id='co-'+(++cardCounter);
-  const total=steps.length;
-  const pct=Math.round(1/total*100);
+  const steps=stepLabels.map((label,i)=>({label,done:i===0}));
 
-  let badgeClass='ba',badgeText='Em andamento',fillClass='fg',color='var(--green)';
-  if(statusVal==='advanced'){badgeClass='bb';badgeText='Avancei! 🎉';fillClass='fa';color='var(--amber)';}
-  if(statusVal==='studying'){badgeClass='bd';badgeText='Estudando';}
-
-  if(statusVal==='studying'){
-    const grid=document.getElementById('studying-grid');
-    const mc=document.createElement('div');
-    mc.className='mini-card';
-    mc.innerHTML=`<div class="mini-emoji">${emoji}</div><div class="mini-name">${companyName}</div><div class="mini-sector">${meta||'Processo futuro'}</div><div class="mini-bar"><div class="mini-bar-fill"></div></div>`;
-    mc.style.animation='fadeUp .4s ease both';
-    grid.insertBefore(mc,grid.firstChild);
-    document.getElementById('cnt-s').textContent=parseInt(document.getElementById('cnt-s').textContent)+1;
-  } else {
-    stepState[id]={done:[0],total,cur:1,fill:fillClass,color};
-
-    const stepsHTML=steps.map((s,i)=>{
-      let cls='step';
-      let label=s;
-      if(i===0){cls='step done';label='✓ '+s;}
-      else if(currentStep&&s.toLowerCase().includes(currentStep.toLowerCase())&&i>0){cls='step cur';}
-      return `<span class="${cls}" data-co="${id}" data-i="${i}" data-label="${s.replace(/^✓\s*/,'')}">${label}</span>`;
-    }).join('');
-
-    const deadlineHTML=deadline?`<span class="deadline">${deadline}</span>`:'';
-
-    const card=document.createElement('div');
-    card.className='card';card.id='card-'+id;
-    card.style.animation='fadeUp .4s ease both';
-    card.innerHTML=`
-      <div class="card-top">
-        <div class="card-l"><span class="co-emoji">${emoji}</span><div><div class="co-name">${companyName}</div><div class="co-meta">${meta||'Processo em andamento'}</div></div></div>
-        <div class="card-r">${deadlineHTML}<span class="badge ${badgeClass}" onclick="cycleStatus(this)">${badgeText}</span></div>
-      </div>
-      <div class="prog-row"><div class="prog-track"><div class="prog-fill ${fillClass}" id="prog-${id}" style="width:${pct}%"></div></div><span class="prog-pct" id="pct-${id}" style="color:${color}">${pct}%</span></div>
-      <div class="steps">${stepsHTML}</div>`;
-
-    const btn=document.querySelector('.btn-add');
-    document.getElementById('active-cards').insertBefore(card,btn);
-
-    if(statusVal==='active') document.getElementById('cnt-a').textContent=parseInt(document.getElementById('cnt-a').textContent)+1;
-    if(statusVal==='advanced') document.getElementById('cnt-v').textContent=parseInt(document.getElementById('cnt-v').textContent)+1;
-  }
-
+  const proc={
+    id:'co-'+Date.now(),
+    name:companyName,
+    meta:meta||(statusVal==='studying'?'Processo futuro':'Processo em andamento'),
+    emoji, deadline, status:statusVal,
+    steps, notes:'', checklistBlocks:[]
+  };
+  procStore.processes.push(proc);
+  saveProcessStore();
+  renderProcesses();
   showToast('✓ Processo adicionado!');
   closeModal();
 }
@@ -998,8 +928,299 @@ function showToast(msg){
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);
 }
 
-/* ── STAGGER ── */
-document.querySelectorAll('.card,.metric,.mini-card').forEach((el,i)=>{el.style.animationDelay=(i*35)+'ms'});
+/* ══════════ PROCESSOS (store + render + detalhes) ══════════ */
+const PROCESS_KEY='processData_v1';
+
+function loadProcessStore(){
+  try{
+    const raw=localStorage.getItem(PROCESS_KEY);
+    if(raw)return JSON.parse(raw);
+  }catch(e){}
+  return {
+    processes:[
+      {id:'wfs',name:'WFS',meta:'Serviços aeroportuários · logística global',emoji:'✈️',deadline:null,status:'active',
+        steps:[{label:'Inscrição',done:true},{label:'Testes online',done:false},{label:'Dinâmica em grupo',done:false},{label:'Business case',done:false},{label:'Painel com diretores',done:false}],
+        notes:'',checklistBlocks:[]},
+      {id:'direcional',name:'Direcional',meta:'Construtora · Protagonize 5.0 · 16 meses',emoji:'🏗️',deadline:'até 31/05',status:'active',
+        steps:[{label:'Inscrição',done:true},{label:'Testes online',done:false},{label:'Dinâmica online',done:false},{label:'Entrevista RH',done:false},{label:'Painel final',done:false}],
+        notes:'',checklistBlocks:[]},
+      {id:'cayena',name:'Cayena',meta:'Foodtech · marketplace B2B · 12 meses · R$ 9.000',emoji:'🌶️',deadline:'até 10/06',status:'advanced',
+        steps:[{label:'Inscrição',done:true},{label:'Questionário de trajetória',done:false},{label:'Entrevista de cultura',done:false},{label:'Cayena Saturday',done:false},{label:'Entrevista com founders',done:false}],
+        notes:'',checklistBlocks:[]},
+      {id:'silimed',name:'Silimed',meta:'Indústria médica',emoji:'💊',deadline:null,status:'rejected',steps:[],notes:'',checklistBlocks:[]},
+      {id:'rsm',name:'RSM International',meta:'Auditoria e consultoria',emoji:'📊',deadline:null,status:'rejected',steps:[],notes:'',checklistBlocks:[]},
+      {id:'loreal',name:"L'Oréal Paris",meta:'Bens de consumo',emoji:'🦋',deadline:null,status:'studying',steps:[],notes:'',checklistBlocks:[]},
+      {id:'ambev',name:'Ambev',meta:'Bebidas',emoji:'🍺',deadline:null,status:'studying',steps:[],notes:'',checklistBlocks:[]},
+      {id:'nestle',name:'Nestlé',meta:'Alimentos',emoji:'🍫',deadline:null,status:'studying',steps:[],notes:'',checklistBlocks:[]},
+      {id:'prudential',name:'Prudential',meta:'Seguros e finanças',emoji:'🏦',deadline:null,status:'studying',steps:[],notes:'',checklistBlocks:[]},
+      {id:'redbull',name:'Red Bull',meta:'Bebidas / marketing',emoji:'🐂',deadline:null,status:'studying',steps:[],notes:'',checklistBlocks:[]}
+    ]
+  };
+}
+let procStore=loadProcessStore();
+function saveProcessStore(){localStorage.setItem(PROCESS_KEY,JSON.stringify(procStore))}
+
+const STATUS_INFO={
+  active:   {cls:'ba',text:'Em andamento',fill:'fg',color:'var(--green)'},
+  advanced: {cls:'bb',text:'Avancei! 🎉', fill:'fa',color:'var(--amber)'},
+  done:     {cls:'be',text:'Concluído ✅',fill:'ft',color:'var(--teal)'},
+  rejected: {cls:'bc',text:'Rejeitada',   fill:'fr',color:'var(--red)'},
+  studying: {cls:'bd',text:'Estudando',   fill:'fp',color:'var(--purple)'}
+};
+const STATUS_CYCLE=['active','advanced','done','rejected'];
+
+function findProcess(id){return procStore.processes.find(p=>p.id===id)}
+
+/* ── métricas ── */
+function renderMetrics(){
+  const p=procStore.processes;
+  const cnt=key=>p.filter(x=>x.status===key).length;
+  document.getElementById('process-metrics').innerHTML=`
+    <div class="metric mg"><div class="metric-val">${cnt('active')}</div><div class="metric-label">Em andamento</div></div>
+    <div class="metric ma"><div class="metric-val">${cnt('advanced')}</div><div class="metric-label">Avancei de fase</div></div>
+    <div class="metric mt"><div class="metric-val">${cnt('done')}</div><div class="metric-label">Concluídos</div></div>
+    <div class="metric mr"><div class="metric-val">${cnt('rejected')}</div><div class="metric-label">Rejeitada</div></div>
+    <div class="metric mp"><div class="metric-val">${cnt('studying')}</div><div class="metric-label">Estudando</div></div>`;
+}
+
+/* ── render do card ── */
+function processCardHtml(p,faded){
+  const info=STATUS_INFO[p.status]||STATUS_INFO.active;
+  const total=p.steps.length;
+  const doneCount=p.steps.filter(s=>s.done).length;
+  const pct=total?Math.round(doneCount/total*100):0;
+  const curIdx=p.steps.findIndex(s=>!s.done);
+  const deadlineHTML=p.deadline?`<span class="deadline">${escapeHtml(p.deadline)}</span>`:'';
+  const stepsHTML=total?`<div class="prog-row"><div class="prog-track"><div class="prog-fill ${info.fill}" style="width:${pct}%"></div></div><span class="prog-pct" style="color:${info.color}">${total?pct+'%':'—'}</span></div>
+      <div class="steps">${p.steps.map((s,i)=>{
+        let cls='step';
+        if(s.done)cls='step done';
+        else if(i===curIdx)cls='step cur';
+        return `<span class="${cls}">${s.done?'✓ ':''}${escapeHtml(s.label)}</span>`;
+      }).join('')}</div>`
+    : `<p class="no-steps-hint">Nenhuma etapa ainda — clique no card para adicionar.</p>`;
+  return `<div class="card ${faded?'card-faded':''}" data-id="${p.id}" onclick="openProcessDetail(event,'${p.id}')">
+    <div class="card-top">
+      <div class="card-l"><span class="co-emoji">${p.emoji}</span><div><div class="co-name">${escapeHtml(p.name)}</div><div class="co-meta">${escapeHtml(p.meta)}</div></div></div>
+      <div class="card-r">${deadlineHTML}<span class="badge ${info.cls}" onclick="cycleStatus(event,'${p.id}')">${info.text}</span></div>
+    </div>
+    ${stepsHTML}
+  </div>`;
+}
+
+function renderProcesses(){
+  renderMetrics();
+  const active=procStore.processes.filter(p=>['active','advanced','done'].includes(p.status));
+  const closed=procStore.processes.filter(p=>p.status==='rejected');
+  const studying=procStore.processes.filter(p=>p.status==='studying');
+
+  document.getElementById('active-cards').innerHTML=active.map(p=>processCardHtml(p,false)).join('');
+  document.getElementById('closed-cards').innerHTML=closed.map(p=>processCardHtml(p,true)).join('');
+  document.getElementById('studying-cards').innerHTML=studying.map(p=>processCardHtml(p,false)).join('');
+  document.getElementById('closed-label').style.display=closed.length?'':'none';
+  document.getElementById('studying-label').style.display=studying.length?'':'none';
+
+  document.querySelectorAll('#section-processos .card').forEach((el,i)=>{
+    el.style.animation='fadeUp .4s ease both';
+    el.style.animationDelay=(i*35)+'ms';
+  });
+}
+
+/* ── ciclo de status (persistido) ── */
+function cycleStatus(event,id){
+  event.stopPropagation();
+  const p=findProcess(id);
+  if(!p)return;
+  const cur=STATUS_CYCLE.indexOf(p.status);
+  p.status=cur===-1?STATUS_CYCLE[0]:STATUS_CYCLE[(cur+1)%STATUS_CYCLE.length];
+  saveProcessStore();
+  renderProcesses();
+  if(document.getElementById('detail-modal-bg').classList.contains('open')&&detailProcessId===id){
+    renderDetailModal();
+  }
+}
+
+/* ── etapa do card: clique avança sequencialmente ── */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('#section-processos .step');
+  if(!el)return;
+  e.stopPropagation();
+  const card=el.closest('.card');
+  const id=card.dataset.id;
+  const p=findProcess(id);
+  if(!p)return;
+  const idx=[...el.parentElement.children].indexOf(el);
+  if(p.steps[idx].done){
+    for(let i=idx;i<p.steps.length;i++)p.steps[i].done=false;
+    showToast('Etapa desmarcada');
+  } else {
+    for(let i=0;i<=idx;i++)p.steps[i].done=true;
+    showToast(idx===p.steps.length-1?'🎉 Todas as etapas concluídas!':'✓ Etapa concluída!');
+  }
+  saveProcessStore();
+  renderProcesses();
+  if(document.getElementById('detail-modal-bg').classList.contains('open')&&detailProcessId===id)renderDetailModal();
+});
+
+/* ── modal de detalhes ── */
+let detailProcessId=null;
+const STUDY_TEMPLATE=[
+  {title:'Bloco 1 — Pesquisa & Autoconhecimento',items:['Panorama Geral','Cultura & Valores','Estudo da Indústria','Marcas & Portfólio','Página do Processo Seletivo','Análise SPIN','Análise de Vaga','Concorrentes & Setor','Notícias & Atualidades','Meus Diferenciais para a empresa']},
+  {title:'Bloco 2 — Testes, Currículo & Pitch',items:['Currículo Personalizado','Checklist Pitch de Sucesso','Preparação Lógica','Reflexão de Fit Cultural','Dinâmica em Grupo']}
+];
+
+function openProcessDetail(event,id){
+  if(event.target.closest('.badge,.step,button,input,textarea'))return;
+  detailProcessId=id;
+  renderDetailModal();
+  document.getElementById('detail-modal-bg').classList.add('open');
+}
+function closeDetailModal(){
+  document.getElementById('detail-modal-bg').classList.remove('open');
+  detailProcessId=null;
+}
+function bgCloseDetail(e){if(e.target===document.getElementById('detail-modal-bg'))closeDetailModal()}
+
+function renderDetailModal(){
+  const p=findProcess(detailProcessId);
+  if(!p)return;
+  const info=STATUS_INFO[p.status]||STATUS_INFO.active;
+  document.getElementById('detail-emoji').textContent=p.emoji;
+  document.getElementById('detail-name').textContent=p.name;
+  document.getElementById('detail-meta').textContent=p.meta;
+  const badge=document.getElementById('detail-badge');
+  badge.className='badge '+info.cls;
+  badge.textContent=info.text;
+  document.getElementById('detail-deadline').value=p.deadline||'';
+
+  document.getElementById('detail-steps').innerHTML=p.steps.map((s,i)=>`
+    <div class="detail-step-row ${s.done?'done':''}">
+      <input type="checkbox" ${s.done?'checked':''} onchange="toggleDetailStep(${i})">
+      <span class="detail-step-label" contenteditable="true" onblur="editDetailStepLabel(${i},this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(s.label)}</span>
+      <button class="detail-step-del" onclick="deleteDetailStep(${i})">✕</button>
+    </div>`).join('') || `<p class="no-steps-hint">Nenhuma etapa ainda.</p>`;
+
+  document.getElementById('detail-notes').value=p.notes||'';
+
+  const checklistEl=document.getElementById('detail-checklist');
+  if(p.checklistBlocks&&p.checklistBlocks.length){
+    checklistEl.innerHTML=p.checklistBlocks.map((block,bi)=>{
+      const doneCount=block.items.filter(it=>it.done).length;
+      return `<div class="checklist-block">
+        <div class="checklist-block-title"><span>${escapeHtml(block.title)}</span><span>${doneCount}/${block.items.length}</span></div>
+        ${block.items.map((it,ii)=>`
+          <div class="checklist-item-row ${it.done?'done':''}">
+            <input type="checkbox" ${it.done?'checked':''} onchange="toggleChecklistItem(${bi},${ii})">
+            <span>${escapeHtml(it.label)}</span>
+          </div>`).join('')}
+      </div>`;
+    }).join('');
+    document.getElementById('detail-apply-template').style.display='none';
+  } else {
+    checklistEl.innerHTML='';
+    document.getElementById('detail-apply-template').style.display='';
+  }
+}
+
+function toggleDetailStep(i){
+  const p=findProcess(detailProcessId);if(!p)return;
+  p.steps[i].done=!p.steps[i].done;
+  saveProcessStore();renderDetailModal();renderProcesses();
+}
+function editDetailStepLabel(i,el){
+  const p=findProcess(detailProcessId);if(!p)return;
+  const val=el.textContent.trim();
+  if(!val){el.textContent=p.steps[i].label;return;}
+  p.steps[i].label=val;
+  saveProcessStore();renderProcesses();
+}
+function deleteDetailStep(i){
+  const p=findProcess(detailProcessId);if(!p)return;
+  p.steps.splice(i,1);
+  saveProcessStore();renderDetailModal();renderProcesses();
+}
+function addDetailStep(){
+  const p=findProcess(detailProcessId);if(!p)return;
+  const input=document.getElementById('detail-new-step');
+  const val=input.value.trim();
+  if(!val){showToast('Digite o nome da etapa!');return;}
+  p.steps.push({label:val,done:false});
+  input.value='';
+  saveProcessStore();renderDetailModal();renderProcesses();
+}
+function addPastedSteps(){
+  const p=findProcess(detailProcessId);if(!p)return;
+  const ta=document.getElementById('detail-paste-text');
+  const lines=ta.value.split('\n').map(l=>l.replace(/^[\s\-*•\d.)]+/,'').trim()).filter(Boolean);
+  if(!lines.length){showToast('Cole algum texto primeiro!');return;}
+  lines.forEach(label=>p.steps.push({label,done:false}));
+  ta.value='';
+  saveProcessStore();renderDetailModal();renderProcesses();
+  showToast(`✓ ${lines.length} etapa(s) adicionada(s)!`);
+}
+function saveDetailNotes(){
+  const p=findProcess(detailProcessId);if(!p)return;
+  p.notes=document.getElementById('detail-notes').value.trim();
+  saveProcessStore();
+}
+function saveDetailDeadline(){
+  const p=findProcess(detailProcessId);if(!p)return;
+  p.deadline=document.getElementById('detail-deadline').value.trim()||null;
+  saveProcessStore();renderProcesses();
+}
+function applyStudyTemplate(){
+  const p=findProcess(detailProcessId);if(!p)return;
+  p.checklistBlocks=STUDY_TEMPLATE.map(b=>({title:b.title,items:b.items.map(label=>({label,done:false}))}));
+  saveProcessStore();renderDetailModal();
+  showToast('✓ Modelo de estudo aplicado!');
+}
+function toggleChecklistItem(bi,ii){
+  const p=findProcess(detailProcessId);if(!p)return;
+  const item=p.checklistBlocks[bi].items[ii];
+  item.done=!item.done;
+  saveProcessStore();renderDetailModal();
+}
+
+renderProcesses();
+
+/* ── frase de apoio ── */
+const SUPPORT_QUOTES=[
+  'Um passo de cada vez já é progresso.',
+  'Você não precisa ver o caminho todo, só o próximo passo.',
+  'Cada "não" te aproxima do "sim" certo.',
+  'Constância vence intensidade.',
+  'Você já chegou mais longe do que imaginava há um ano.',
+  'Descansar também faz parte do processo.',
+  'Sua trajetória não é uma corrida contra ninguém.',
+  'O que é seu não passa por você despercebido.',
+  'Estudar hoje é investir na você de amanhã.',
+  'Confiança se constrói com preparação.',
+  'Nem todo processo vai dar certo, e tudo bem.',
+  'Você é mais capaz do que o nervosismo te faz sentir.'
+];
+const SUPPORT_IMAGES=[
+  'honre quem voce é.png',
+  'tudo dá certo para mim.jpg',
+  'velaris.jpg',
+  'você é capaz.png'
+];
+function openLightbox(){
+  document.getElementById('lightbox-img').src=document.getElementById('support-thumb').src;
+  document.getElementById('lightbox-bg').classList.add('open');
+}
+function closeLightbox(){document.getElementById('lightbox-bg').classList.remove('open')}
+
+(function renderSupportQuote(){
+  const start=new Date(new Date().getFullYear(),0,0);
+  const diff=new Date()-start;
+  const dayOfYear=Math.floor(diff/86400000);
+  const quote=SUPPORT_QUOTES[dayOfYear%SUPPORT_QUOTES.length];
+  const quoteEl=document.getElementById('support-quote');
+  if(quoteEl)quoteEl.textContent='💛 '+quote;
+  const img=SUPPORT_IMAGES[dayOfYear%SUPPORT_IMAGES.length];
+  const thumb=document.getElementById('support-thumb');
+  if(thumb)thumb.src='png/'+encodeURIComponent(img);
+})();
 
 /* ══════════ PLANNER ══════════ */
 const PLANNER_KEY='plannerData_v1';
