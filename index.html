@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainee Tracker</title>
+<title>Em busca do meu futuro</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -152,6 +152,9 @@ nav{position:sticky;top:0;z-index:50;background:var(--surf);border-bottom:0.5px 
 .bb{color:var(--amber);border-color:var(--amber-b);background:var(--amber-l)}
 .bc{color:var(--red);  border-color:var(--red-b);  background:var(--red-l)}
 .bd{color:var(--purple);border-color:var(--purple-b);background:var(--purple-l)}
+.be{color:var(--teal); border-color:var(--teal-b); background:var(--teal-l)}
+.badge{cursor:pointer;transition:transform .15s}
+.badge:hover{transform:translateY(-1px)}
 .deadline{font-size:10px;color:var(--amber);background:var(--amber-l);border:1px solid var(--amber-b);border-radius:99px;padding:4px 11px;font-weight:700;letter-spacing:.04em}
 
 /* PROGRESS */
@@ -318,8 +321,9 @@ nav{flex-wrap:wrap;row-gap:10px}
 
 /* TASK ROWS (week + day) */
 .task-list,.day-list{display:flex;flex-direction:column;gap:6px}
-.task-row{display:flex;align-items:center;gap:7px;background:var(--cc-l);border:1px solid var(--cc-b);border-radius:var(--r-sm);padding:7px 8px;transition:opacity .2s}
-.task-row.dragging{opacity:.35}
+.task-item{transition:opacity .2s}
+.task-item.dragging{opacity:.35}
+.task-row{display:flex;align-items:center;gap:7px;background:var(--cc-l);border:1px solid var(--cc-b);border-radius:var(--r-sm);padding:7px 8px}
 .task-row.done{opacity:.55}
 .task-row.done .task-title{text-decoration:line-through}
 .task-drag{cursor:grab;color:var(--txt3);font-size:.85rem;user-select:none;flex-shrink:0}
@@ -328,9 +332,15 @@ nav{flex-wrap:wrap;row-gap:10px}
 .task-cat-dot{width:7px;height:7px;border-radius:50%;background:var(--cc);flex-shrink:0}
 .task-title{flex:1;font-size:13px;color:var(--txt);outline:none;word-break:break-word;min-width:0}
 .task-rec{font-size:.7rem;opacity:.65;flex-shrink:0}
+.task-desc-toggle{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:.75rem;opacity:.4;transition:all .2s;flex-shrink:0;padding:0}
+.task-desc-toggle:hover{opacity:1}
+.task-desc-toggle.has{opacity:.9}
 .task-del{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:.8rem;opacity:.5;transition:all .2s;flex-shrink:0}
 .task-del:hover{opacity:1;color:var(--red)}
 .task-empty{font-size:12px;color:var(--txt3);text-align:center;padding:1.5rem 0;font-style:italic}
+.task-desc{margin-top:5px}
+.task-desc-input{width:100%;background:var(--inp);border:0.5px solid var(--bdr2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:12px;font-family:var(--font-body);color:var(--txt);resize:vertical;min-height:44px;outline:none}
+.task-desc-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-l)}
 
 .day-list .task-row{padding:13px 15px}
 .day-list .task-title{font-size:14px}
@@ -355,7 +365,7 @@ nav{flex-wrap:wrap;row-gap:10px}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="lbox">
-    <div class="llogo"><div class="llogo-icon">🎯</div>Trainee Tracker</div>
+    <div class="llogo"><div class="llogo-icon">🎯</div>Em busca do meu futuro</div>
     <h1 class="ltitle">Bem-vinda de volta</h1>
     <p class="lsub">Acompanhe seus processos seletivos em um só lugar, do início ao fim.</p>
     <div class="field"><label>Usuário</label><input type="text" id="lu" placeholder="seu nome" autocomplete="username"></div>
@@ -368,7 +378,7 @@ nav{flex-wrap:wrap;row-gap:10px}
 <!-- APP -->
 <div id="app">
   <nav>
-    <div class="nav-brand"><div class="nav-dot"></div>Trainee Tracker</div>
+    <div class="nav-brand"><div class="nav-dot"></div>Em busca do meu futuro</div>
     <div class="nav-sections">
       <button class="nav-sec-btn active" id="sec-btn-processos" onclick="switchSection('processos')">🎯 Processos</button>
       <button class="nav-sec-btn" id="sec-btn-planner" onclick="switchSection('planner')">🗓️ Planner</button>
@@ -404,7 +414,7 @@ nav{flex-wrap:wrap;row-gap:10px}
         <div class="card" id="card-wfs">
           <div class="card-top">
             <div class="card-l"><span class="co-emoji">✈️</span><div><div class="co-name">WFS</div><div class="co-meta">Serviços aeroportuários · logística global</div></div></div>
-            <div class="card-r"><span class="badge ba">Em andamento</span></div>
+            <div class="card-r"><span class="badge ba" onclick="cycleStatus(this)">Em andamento</span></div>
           </div>
           <div class="prog-row"><div class="prog-track"><div class="prog-fill fg" id="prog-wfs" style="width:20%"></div></div><span class="prog-pct" id="pct-wfs" style="color:var(--green)">20%</span></div>
           <div class="steps">
@@ -420,7 +430,7 @@ nav{flex-wrap:wrap;row-gap:10px}
         <div class="card" id="card-direcional">
           <div class="card-top">
             <div class="card-l"><span class="co-emoji">🏗️</span><div><div class="co-name">Direcional</div><div class="co-meta">Construtora · Protagonize 5.0 · 16 meses</div></div></div>
-            <div class="card-r"><span class="deadline">até 31/05</span><span class="badge ba">Em andamento</span></div>
+            <div class="card-r"><span class="deadline">até 31/05</span><span class="badge ba" onclick="cycleStatus(this)">Em andamento</span></div>
           </div>
           <div class="prog-row"><div class="prog-track"><div class="prog-fill fg" id="prog-direcional" style="width:20%"></div></div><span class="prog-pct" id="pct-direcional" style="color:var(--green)">20%</span></div>
           <div class="steps">
@@ -436,7 +446,7 @@ nav{flex-wrap:wrap;row-gap:10px}
         <div class="card" id="card-cayena">
           <div class="card-top">
             <div class="card-l"><span class="co-emoji">🌶️</span><div><div class="co-name">Cayena</div><div class="co-meta">Foodtech · marketplace B2B · 12 meses · R$ 9.000</div></div></div>
-            <div class="card-r"><span class="deadline">até 10/06</span><span class="badge bb">Avancei! 🎉</span></div>
+            <div class="card-r"><span class="deadline">até 10/06</span><span class="badge bb" onclick="cycleStatus(this)">Avancei! 🎉</span></div>
           </div>
           <div class="prog-row"><div class="prog-track"><div class="prog-fill fa" id="prog-cayena" style="width:40%"></div></div><span class="prog-pct" id="pct-cayena" style="color:var(--amber)">40%</span></div>
           <div class="steps">
@@ -455,11 +465,11 @@ nav{flex-wrap:wrap;row-gap:10px}
     <!-- ENCERRADAS -->
     <div class="slabel">Encerradas</div>
     <div class="card card-faded">
-      <div class="card-top"><div class="card-l"><span class="co-emoji">💊</span><div><div class="co-name">Silimed</div><div class="co-meta">Indústria médica</div></div></div><div class="card-r"><span class="badge bc">Rejeitada</span></div></div>
+      <div class="card-top"><div class="card-l"><span class="co-emoji">💊</span><div><div class="co-name">Silimed</div><div class="co-meta">Indústria médica</div></div></div><div class="card-r"><span class="badge bc" onclick="cycleStatus(this)">Rejeitada</span></div></div>
       <div class="prog-row"><div class="prog-track"><div class="prog-fill fr" style="width:100%"></div></div><span class="prog-pct" style="color:var(--red)">—</span></div>
     </div>
     <div class="card card-faded">
-      <div class="card-top"><div class="card-l"><span class="co-emoji">📊</span><div><div class="co-name">RSM International</div><div class="co-meta">Auditoria e consultoria</div></div></div><div class="card-r"><span class="badge bc">Rejeitada</span></div></div>
+      <div class="card-top"><div class="card-l"><span class="co-emoji">📊</span><div><div class="co-name">RSM International</div><div class="co-meta">Auditoria e consultoria</div></div></div><div class="card-r"><span class="badge bc" onclick="cycleStatus(this)">Rejeitada</span></div></div>
       <div class="prog-row"><div class="prog-track"><div class="prog-fill fr" style="width:100%"></div></div><span class="prog-pct" style="color:var(--red)">—</span></div>
     </div>
 
@@ -654,6 +664,11 @@ nav{flex-wrap:wrap;row-gap:10px}
     </div>
 
     <div class="mfield">
+      <label>Descrição (opcional)</label>
+      <textarea id="task-desc-input" rows="3" placeholder="Detalhes do que precisa fazer..."></textarea>
+    </div>
+
+    <div class="mfield">
       <label>Categoria</label>
       <div class="cat-choice-pick" id="task-cat-pick"></div>
     </div>
@@ -758,6 +773,21 @@ document.addEventListener('click',e=>{
   }
   updateCard(co);
 });
+
+/* ── STATUS CYCLE ── */
+const STATUS_CYCLE=[
+  {cls:'ba',text:'Em andamento'},
+  {cls:'bb',text:'Avancei! 🎉'},
+  {cls:'be',text:'Concluído ✅'},
+  {cls:'bc',text:'Rejeitada'}
+];
+function cycleStatus(el){
+  const cur=STATUS_CYCLE.findIndex(s=>el.classList.contains(s.cls));
+  const next=STATUS_CYCLE[(cur+1)%STATUS_CYCLE.length];
+  STATUS_CYCLE.forEach(s=>el.classList.remove(s.cls));
+  el.classList.add(next.cls);
+  el.textContent=next.text;
+}
 
 /* ── MODAL ── */
 function openModal(){document.getElementById('modal-bg').classList.add('open')}
@@ -930,7 +960,7 @@ function saveProcess(group){
     card.innerHTML=`
       <div class="card-top">
         <div class="card-l"><span class="co-emoji">${emoji}</span><div><div class="co-name">${companyName}</div><div class="co-meta">${meta||'Processo em andamento'}</div></div></div>
-        <div class="card-r">${deadlineHTML}<span class="badge ${badgeClass}">${badgeText}</span></div>
+        <div class="card-r">${deadlineHTML}<span class="badge ${badgeClass}" onclick="cycleStatus(this)">${badgeText}</span></div>
       </div>
       <div class="prog-row"><div class="prog-track"><div class="prog-fill ${fillClass}" id="prog-${id}" style="width:${pct}%"></div></div><span class="prog-pct" id="pct-${id}" style="color:${color}">${pct}%</span></div>
       <div class="steps">${stepsHTML}</div>`;
@@ -1015,6 +1045,29 @@ function loadPlannerStore(){
 }
 let pStore=loadPlannerStore();
 function savePlannerStore(){localStorage.setItem(PLANNER_KEY,JSON.stringify(pStore))}
+
+/* seed: categoria LinkedIn + tarefas reais do Google Calendar/Notion (uma única vez) */
+function ensureSeedData(){
+  let changed=false;
+  if(!pStore.categories.some(c=>c.id==='cat-linkedin')){
+    pStore.categories.push({id:'cat-linkedin',name:'LinkedIn',color:'#FF6FA5'});
+    changed=true;
+  }
+  if(!localStorage.getItem('plannerSeeded_v1')){
+    localStorage.setItem('plannerSeeded_v1','1');
+    const seeds=[
+      {id:'seed-psicologa',title:'Compromisso pessoal',categoryId:'cat-pessoal',time:'16:00',date:null,recurrence:{freq:'weekly',weekday:4},done:false,order:1,description:'Sessão semanal recorrente (você pode renomear esta tarefa a qualquer momento).'},
+      {id:'seed-loreal',title:"Retomar estudo: L'Oréal Paris",categoryId:'cat-estudos',time:null,date:'2026-07-07',recurrence:null,done:false,order:2,description:"Revisar portfólio de marcas e categorias de beleza.\nEstudar posicionamento, propósito e cultura interna.\nLer cases de marketing (Brandstorm, campanhas).\nRevisar página já existente no Notion sobre a L'Oréal."},
+      {id:'seed-li-alumna',title:'Publicar no LinkedIn: Fim da mentoria no Alumna 🎓',categoryId:'cat-linkedin',time:null,date:'2026-07-08',recurrence:null,done:false,order:3,description:'Falar sobre a experiência na mentoria do Alumna, aprendizados e gratidão.'},
+      {id:'seed-li-pitch',title:'Publicar no LinkedIn: O que é um pitch? 🎤',categoryId:'cat-linkedin',time:null,date:'2026-07-13',recurrence:null,done:false,order:4,description:'Explicar de forma acessível o que é um pitch, por que é importante e como estruturar.'},
+      {id:'seed-li-modec',title:'Publicar no LinkedIn: Minha experiência na Modec 🚢',categoryId:'cat-linkedin',time:null,date:'2026-07-15',recurrence:null,done:false,order:5,description:'Contar a experiência na Modec, com o contexto de pitch já estabelecido.'}
+    ];
+    seeds.forEach(s=>{if(!pStore.tasks.some(t=>t.id===s.id))pStore.tasks.push(s);});
+    changed=true;
+  }
+  if(changed)savePlannerStore();
+}
+ensureSeedData();
 
 const plannerState={
   view:'month',
@@ -1179,6 +1232,7 @@ function saveCategory(){
 /* ── task modal ── */
 function openTaskModal(prefillDate){
   document.getElementById('task-title').value='';
+  document.getElementById('task-desc-input').value='';
   document.getElementById('task-time').value='';
   document.getElementById('task-repeat').value='once';
   document.getElementById('task-date').value=prefillDate||toISO(new Date());
@@ -1216,6 +1270,7 @@ function saveTask(){
   const catEl=document.querySelector('#task-cat-pick .cat-choice.sel');
   if(!catEl){showToast('Escolha uma categoria!');return;}
   const catId=catEl.dataset.id;
+  const description=document.getElementById('task-desc-input').value.trim()||null;
   const time=document.getElementById('task-time').value||null;
   const repeat=document.getElementById('task-repeat').value;
   const dateVal=repeat==='daily'?toISO(new Date()):document.getElementById('task-date').value;
@@ -1223,7 +1278,7 @@ function saveTask(){
   const d=new Date(dateVal+'T00:00:00');
   const task={
     id:'t-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),
-    title,categoryId:catId,time,
+    title,description,categoryId:catId,time,
     date:repeat==='once'?dateVal:null,
     recurrence:repeat==='once'?null:repeat==='weekly'?{freq:'weekly',weekday:d.getDay()}:{freq:'daily'},
     done:false,
@@ -1240,29 +1295,46 @@ function saveTask(){
 function taskRowHtml(t,iso){
   const cat=pStore.categories.find(c=>c.id===t.categoryId)||{color:'#999',name:'?'};
   const done=isTaskDone(t,iso);
-  return `<div class="task-row ${done?'done':''}" draggable="true" data-id="${t.id}" style="--cc:${cat.color};--cc-l:${hexA(cat.color,.14)};--cc-b:${hexA(cat.color,.32)}">
-    <span class="task-drag">⠿</span>
-    <input type="checkbox" class="task-check" ${done?'checked':''} onchange="toggleTaskDone('${t.id}','${iso}')">
-    <input type="time" class="task-time-input" value="${t.time||''}" onchange="setTaskTime('${t.id}',this.value)">
-    <span class="task-cat-dot" title="${escapeHtml(cat.name)}"></span>
-    <span class="task-title" contenteditable="true" onblur="editTaskTitle(this,'${t.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(t.title)}</span>
-    ${t.recurrence?'<span class="task-rec" title="Tarefa recorrente">🔁</span>':''}
-    <button class="task-del" onclick="deleteTask('${t.id}')">✕</button>
+  const hasDesc=!!(t.description&&t.description.trim());
+  return `<div class="task-item" draggable="true" data-id="${t.id}">
+    <div class="task-row ${done?'done':''}" style="--cc:${cat.color};--cc-l:${hexA(cat.color,.14)};--cc-b:${hexA(cat.color,.32)}">
+      <span class="task-drag">⠿</span>
+      <input type="checkbox" class="task-check" ${done?'checked':''} onchange="toggleTaskDone('${t.id}','${iso}')">
+      <input type="time" class="task-time-input" value="${t.time||''}" onchange="setTaskTime('${t.id}',this.value)">
+      <span class="task-cat-dot" title="${escapeHtml(cat.name)}"></span>
+      <span class="task-title" contenteditable="true" onblur="editTaskTitle(this,'${t.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${escapeHtml(t.title)}</span>
+      ${t.recurrence?'<span class="task-rec" title="Tarefa recorrente">🔁</span>':''}
+      <button class="task-desc-toggle ${hasDesc?'has':''}" onclick="toggleDesc('${t.id}')" title="Descrição">📝</button>
+      <button class="task-del" onclick="deleteTask('${t.id}')">✕</button>
+    </div>
+    <div class="task-desc" id="desc-${t.id}" hidden>
+      <textarea class="task-desc-input" placeholder="Adicione uma descrição..." onblur="editTaskDesc(this,'${t.id}')">${escapeHtml(t.description||'')}</textarea>
+    </div>
   </div>`;
+}
+function toggleDesc(id){
+  const box=document.getElementById('desc-'+id);
+  if(box)box.hidden=!box.hidden;
+}
+function editTaskDesc(el,id){
+  const t=pStore.tasks.find(x=>x.id===id);
+  if(!t)return;
+  t.description=el.value.trim()||null;
+  savePlannerStore();
 }
 function enableDragReorder(container,dateStr){
   if(!container)return;
   container.addEventListener('dragstart',e=>{
-    const row=e.target.closest('.task-row');
-    if(!row)return;
-    row.classList.add('dragging');
+    const item=e.target.closest('.task-item');
+    if(!item)return;
+    item.classList.add('dragging');
     e.dataTransfer.effectAllowed='move';
-    e.dataTransfer.setData('text/plain',row.dataset.id);
+    e.dataTransfer.setData('text/plain',item.dataset.id);
   });
   container.addEventListener('dragend',e=>{
-    const row=e.target.closest('.task-row');
-    if(row)row.classList.remove('dragging');
-    const ids=[...container.querySelectorAll('.task-row')].map(r=>r.dataset.id);
+    const item=e.target.closest('.task-item');
+    if(item)item.classList.remove('dragging');
+    const ids=[...container.querySelectorAll('.task-item')].map(r=>r.dataset.id);
     pStore.dayOrder[dateStr]=ids;
     savePlannerStore();
   });
@@ -1276,7 +1348,7 @@ function enableDragReorder(container,dateStr){
   });
 }
 function getDragAfterElement(container,y){
-  const els=[...container.querySelectorAll('.task-row:not(.dragging)')];
+  const els=[...container.querySelectorAll('.task-item:not(.dragging)')];
   return els.reduce((closest,el)=>{
     const box=el.getBoundingClientRect();
     const offset=y-box.top-box.height/2;
