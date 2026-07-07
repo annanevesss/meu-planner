@@ -307,14 +307,15 @@ nav{flex-wrap:wrap;row-gap:10px}
 /* MONTH VIEW */
 .mcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
 .mcal-head{text-align:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);padding-bottom:8px}
-.mcal-cell{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r-md);min-height:76px;padding:8px;cursor:pointer;transition:all .2s}
+.mcal-cell{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r-md);min-height:94px;padding:8px;cursor:pointer;transition:all .2s}
 .mcal-cell:hover{border-color:var(--purple-b);transform:translateY(-2px);box-shadow:var(--shad)}
 .mcal-cell.out{opacity:.32}
 .mcal-cell.today{border-color:var(--green-b);box-shadow:0 0 0 1.5px var(--green-b) inset}
-.mcal-num{font-family:var(--font-display);font-weight:800;font-size:.95rem;margin-bottom:6px;color:var(--txt)}
-.mcal-dots{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
-.mcal-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.mcal-more{font-size:9px;color:var(--txt3);font-weight:700}
+.mcal-num{font-family:var(--font-display);font-weight:800;font-size:.95rem;margin-bottom:5px;color:var(--txt)}
+.mcal-tasks{display:flex;flex-direction:column;gap:3px}
+.mcal-task{font-size:10px;font-weight:700;color:var(--txt);background:var(--cc-l);border-left:2.5px solid var(--cc);border-radius:4px;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;cursor:pointer}
+.mcal-task.done{opacity:.5;text-decoration:line-through}
+.mcal-more{font-size:9px;color:var(--txt3);font-weight:700;padding-left:3px}
 
 /* WEEK VIEW */
 .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
@@ -324,6 +325,11 @@ nav{flex-wrap:wrap;row-gap:10px}
 .week-col-num{font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--txt)}
 .week-add{font-size:11px;color:var(--txt3);background:transparent;border:1px dashed var(--bdr2);border-radius:var(--r-sm);padding:6px;cursor:pointer;transition:all .2s;margin-top:auto}
 .week-add:hover{color:var(--purple);border-color:var(--purple-b);background:var(--purple-l)}
+
+/* TASK CHIP (mensal + semanal: só título) */
+.task-chip{background:var(--cc-l);border-left:3px solid var(--cc);border-radius:6px;padding:7px 9px;font-size:12.5px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:transform .15s}
+.task-chip:hover{transform:translateX(3px)}
+.task-chip.done{opacity:.5;text-decoration:line-through}
 
 /* TASK ROWS (week + day) */
 .task-list,.day-list{display:flex;flex-direction:column;gap:6px}
@@ -1513,6 +1519,12 @@ function saveTask(){
 }
 
 /* ── row + drag reorder ── */
+function taskChipHtml(t,iso,mini){
+  const cat=pStore.categories.find(c=>c.id===t.categoryId)||{color:'#999',name:'?'};
+  const done=isTaskDone(t,iso);
+  const cls=mini?'mcal-task':'task-chip';
+  return `<div class="${cls} ${done?'done':''}" style="--cc:${cat.color};--cc-l:${hexA(cat.color,.16)}" onclick="event.stopPropagation();gotoDay('${iso}')" title="${escapeHtml(t.title)}">${done?'✓ ':''}${escapeHtml(t.title)}</div>`;
+}
 function taskRowHtml(t,iso){
   const cat=pStore.categories.find(c=>c.id===t.categoryId)||{color:'#999',name:'?'};
   const done=isTaskDone(t,iso);
@@ -1599,14 +1611,11 @@ function renderMonth(){
     const iso=toISO(cellDate);
     const dayTasks=tasksForDate(iso);
     const isToday=iso===toISO(new Date());
-    const dotsHtml=dayTasks.slice(0,4).map(t=>{
-      const cat=pStore.categories.find(c=>c.id===t.categoryId);
-      return `<span class="mcal-dot" style="background:${cat?cat.color:'#999'}"></span>`;
-    }).join('');
-    const moreHtml=dayTasks.length>4?`<span class="mcal-more">+${dayTasks.length-4}</span>`:'';
+    const shown=dayTasks.slice(0,3).map(t=>taskChipHtml(t,iso,true)).join('');
+    const moreHtml=dayTasks.length>3?`<div class="mcal-more">+${dayTasks.length-3} mais</div>`:'';
     cellsHtml+=`<div class="mcal-cell ${inMonth?'':'out'} ${isToday?'today':''}" onclick="gotoDay('${iso}')">
       <div class="mcal-num">${cellDate.getDate()}</div>
-      <div class="mcal-dots">${dotsHtml}${moreHtml}</div>
+      <div class="mcal-tasks">${shown}${moreHtml}</div>
     </div>`;
   }
   const headerHtml=WEEKDAY_SHORT.map(w=>`<div class="mcal-head">${w}</div>`).join('');
@@ -1617,22 +1626,19 @@ function renderWeek(){
   const end=new Date(start);end.setDate(end.getDate()+6);
   document.getElementById('date-nav-label').textContent=`${start.getDate()} ${MONTH_NAMES[start.getMonth()].slice(0,3)} – ${end.getDate()} ${MONTH_NAMES[end.getMonth()].slice(0,3)} ${end.getFullYear()}`;
   let cols='';
-  const isoList=[];
   for(let i=0;i<7;i++){
     const d=new Date(start);d.setDate(d.getDate()+i);
     const iso=toISO(d);
-    isoList.push(iso);
     const isToday=iso===toISO(new Date());
     const dayTasks=tasksForDate(iso);
-    const rowsHtml=dayTasks.map(t=>taskRowHtml(t,iso)).join('')||`<div class="task-empty">Sem tarefas</div>`;
+    const chipsHtml=dayTasks.map(t=>taskChipHtml(t,iso,false)).join('')||`<div class="task-empty">Sem tarefas</div>`;
     cols+=`<div class="week-col ${isToday?'today':''}">
       <div class="week-col-head">${WEEKDAY_SHORT[i]} <span class="week-col-num">${d.getDate()}</span></div>
-      <div class="task-list" id="tl-${iso}">${rowsHtml}</div>
+      <div class="task-list">${chipsHtml}</div>
       <button class="week-add" onclick="openTaskModal('${iso}')">+ tarefa</button>
     </div>`;
   }
   document.getElementById('view-week').innerHTML=`<div class="week-grid">${cols}</div>`;
-  isoList.forEach(iso=>enableDragReorder(document.getElementById('tl-'+iso),iso));
 }
 function renderDay(){
   const d=plannerState.dayCursor;
